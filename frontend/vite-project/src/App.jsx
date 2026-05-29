@@ -6,19 +6,32 @@ function App() {
   const [logs, setLogs] = useState([])
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("All")
+const filteredLogs = logs
+  .filter((log) =>
+    log.event.toLowerCase().includes(search.toLowerCase()) ||
+    log.ip.toLowerCase().includes(search.toLowerCase()) ||
+    log.timestamp.toLowerCase().includes(search.toLowerCase())
+  )
+  .filter((log) =>
+    filter === "All"
+      ? true
+      : log.severity === filter
+  )
 
-  const criticalCount = logs.filter(
-    (log) => log.severity === "Critical"
-  ).length
+const criticalCount = filteredLogs.filter(
+  (log) => log.severity === "Critical"
+).length
 
-  const highCount = logs.filter(
-    (log) => log.severity === "High"
-  ).length
+const highCount = filteredLogs.filter(
+  (log) => log.severity === "High"
+).length
 
-  const lowCount = logs.filter(
-    (log) => log.severity === "Low"
-  ).length
+const lowCount = filteredLogs.filter(
+  (log) => log.severity === "Low"
+).length
 
+
+  
   useEffect(() => {
 
     axios.get("http://127.0.0.1:5000/logs")
@@ -94,7 +107,7 @@ function App() {
           }}
         >
           <h2>Total Logs</h2>
-          <p>{logs.length}</p>
+          <p>{filteredLogs.length}</p>
         </div>
 
         <div
@@ -135,20 +148,15 @@ function App() {
 
       </div>
 
-      {
-        logs
-        .filter((log) =>
-  log.event.toLowerCase().includes(search.toLowerCase()) ||
-
-  log.ip.toLowerCase().includes(search.toLowerCase())
-
-)
-          .filter((log) =>
-            filter === "All"
-              ? true
-              : log.severity === filter
-          )
-          .map((log) => (
+     {
+  [...filteredLogs]
+    .sort(
+      (a, b) =>
+        new Date(b.timestamp) -
+        new Date(a.timestamp)
+    )
+  
+  .map((log) => (
             <div
               key={log.id}
               style={{
