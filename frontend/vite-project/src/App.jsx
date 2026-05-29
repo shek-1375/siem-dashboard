@@ -141,6 +141,7 @@ function App() {
   log.event.toLowerCase().includes(search.toLowerCase()) ||
 
   log.ip.toLowerCase().includes(search.toLowerCase())
+
 )
           .filter((log) =>
             filter === "All"
@@ -198,6 +199,7 @@ function App() {
               </p>
 
               <p>IP Address: {log.ip}</p>
+              <p>Time: {log.timestamp}</p>
 
               <hr />
 
